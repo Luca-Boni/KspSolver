@@ -1,52 +1,51 @@
 #pragma once
 
 #include "KspInstance.hpp"
+#include "KspSolution.hpp"
+#include <vector>
 
 class KspSolver
 {
 private:
     KspInstance instance;
-    int curWeight;
-    int curValue;
-    std::vector<int> curValues;
-    std::vector<std::vector<bool>> curSolution;
-    std::vector<std::vector<bool>> bestSolution;
     int k;
-    int* lastValues;
-    int lastValuesLen;
+
+    KspSolution curSolution;
     int curIteration;
+    int *lastValues;
+    int lastValuesLen;
+
+    KspSolution bestSolution;
     int bestSolutionIteration;
+
     clock_t startTime;
     clock_t bestSolutionTime;
 
-    int GetItemsValue(std::vector<std::vector<bool>> items);
-    std::vector<int> GetItemsValues(std::vector<std::vector<bool>> items);
-    int EmptyGroups(std::vector<std::vector<bool>> items);
-    int GetItemsWeight(std::vector<std::vector<bool>> items);
-    int ObjectiveFunction(std::vector<std::vector<bool>> items);
-    void PrintItems(std::vector<std::vector<bool>> items);
-    std::vector<std::vector<std::vector<bool>>> GetNeighbours();
-
-    int CurEmptyGroups();
-
+    void Initialize();
     void Iterate();
-    void PrintSolution();
+    void PrintCurrentState();
+    void PrintCurSolution();
+    void PrintBestSolution();
     void PrintInstance();
 
 public:
-    KspSolver(KspInstance instance, int k);
-    KspSolver();
+    KspSolver(KspInstance &instance, int k);
 
-    int GetCurItemsValue();
-    std::vector<int> GetCurItemsValues();
-    int GetCurItemsWeight();
-    int GetCurWeight();
-    int GetCurIteration();
+    int GetCurValue() { return curSolution.GetValue(); }
+    int GetBestValue() { return bestSolution.GetValue(); }
+
+    std::vector<int> GetCurGroupsProfits() { return curSolution.GetGroupsProfits(); }
+    std::vector<int> GetBestGroupsProfits() { return bestSolution.GetGroupsProfits(); }
+
+    int GetCurWeight() { return curSolution.GetWeight(); }
+    int GetBestWeight() { return bestSolution.GetWeight(); }
+
+    int GetCurIteration() { return curIteration; }
 
     void PrintCurItems();
+    void PrintBestItems();
+
     void PrintLastValues();
-    void Print();
-    int CurObjectiveFunction();
 
     void Solve(int maxIterations);
 };

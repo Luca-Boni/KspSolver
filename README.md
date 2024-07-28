@@ -12,7 +12,8 @@ This program was written in C++ with Linux as the target platform. To compile it
 
 To run the program, execute `kspSolver` located in the `bin` directory. It takes three arguments:
 
-- The path to the input file (MANDATORY)
+- `instance_file`, the path to the input file (MANDATORY)
+- `srand`, the seed for the random number generator (OPTIONAL, default is the current UNIX time)
 - `k`, which is the size of the list that keeps the last values of the objective function (OPTIONAL, default is 20)
 - `max_iterations`, the maximum number of iterations the program will run (OPTIONAL, default is 100)
 

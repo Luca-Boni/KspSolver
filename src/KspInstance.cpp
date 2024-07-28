@@ -1,13 +1,5 @@
 #include "KspInstance.hpp"
 
-KspInstance::KspInstance(int groupsNum, int itemsNum, int capacity, std::vector<std::vector<Item>> items)
-{
-    this->groupsNum = groupsNum;
-    this->itemsNum = itemsNum;
-    this->capacity = capacity;
-    this->items = items;
-}
-
 KspInstance::KspInstance(std::string filename)
 {
     std::ifstream file(filename);
@@ -19,30 +11,7 @@ KspInstance::KspInstance(std::string filename)
 
     file >> itemsNum >> groupsNum >> capacity;
 
-    items.resize(groupsNum);
-
-    int groupSize;
-    for (int group = 0; group < groupsNum; group++)
-    {
-        file >> groupSize;
-        items[group].resize(groupSize);
-    }
-
-    for (int group = 0; group < groupsNum; group++)
-    {
-        for (int item = 0; item < items[group].size(); item++)
-        {
-            file >> items[group][item].weight >> items[group][item].value;
-        }
-    }
-}
-
-KspInstance::KspInstance()
-{
-    this->groupsNum = 0;
-    this->itemsNum = 0;
-    this->capacity = 0;
-    this->items = std::vector<std::vector<Item>>();
+    availableItems = AvailableItems(groupsNum, itemsNum, capacity, file);
 }
 
 int KspInstance::GetGroupsNum()
@@ -60,34 +29,20 @@ int KspInstance::GetCapacity()
     return capacity;
 }
 
-std::vector<std::vector<Item>> KspInstance::GetItems()
+AvailableItems KspInstance::GetAvailableItems()
 {
-    return items;
+    return availableItems;
 }
 
-void KspInstance::PrintItem(Item item)
+KspSolution KspInstance::GetInitialSolution()
 {
-    std::cout << "(" << item.weight << ", " << item.value << ")";
-}
-
-void KspInstance::PrintItems()
-{
-    for (int group = 0; group < groupsNum; group++)
-    {
-        std::cout << "Group " << group << ": ";
-        for (auto item : items[group])
-        {
-            PrintItem(item);
-            std::cout << " ";
-        }
-        std::cout << std::endl;
-    }
+    return availableItems.GetInitialSolution();
 }
 
 void KspInstance::Print()
 {
-    std::cout << "Groups: " << groupsNum << std::endl;
-    std::cout << "Items: " << itemsNum << std::endl;
-    std::cout << "Capacity: " << capacity << std::endl;
-    PrintItems();
+    std::cout << "Groups: " << groupsNum << std::endl
+              << "Items: " << itemsNum << std::endl
+              << "Capacity: " << capacity << std::endl
+              << availableItems.ToString();
 }

@@ -1,14 +1,11 @@
 #pragma once
 
+#include "Item.hpp"
+#include "AvailableItems.hpp"
+#include "KspSolution.hpp"
 #include <vector>
 #include <iostream>
 #include <fstream>
-
-typedef struct Item
-{
-    int weight;
-    int value;
-} Item;
 
 class KspInstance
 {
@@ -16,19 +13,15 @@ private:
     int groupsNum;
     int itemsNum;
     int capacity;
-    std::vector<std::vector<Item>> items;
+    AvailableItems availableItems;
 
 public:
+    KspInstance(std::string filename);
+
     int GetGroupsNum();
     int GetItemsNum();
     int GetCapacity();
-    std::vector<std::vector<Item>> GetItems();
-
-    void PrintItem(Item item);
-    void PrintItems();
+    AvailableItems GetAvailableItems();
+    KspSolution GetInitialSolution();
     void Print();
-
-    KspInstance(int groupsNum, int itemsNum, int capacity, std::vector<std::vector<Item>> items);
-    KspInstance(std::string filename);
-    KspInstance();
 };
