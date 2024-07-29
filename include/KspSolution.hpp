@@ -5,13 +5,16 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <unordered_set>
 
 class KspSolution
 {
 private:
     int weight;
     std::vector<int> groupProfits;
-    std::vector<std::vector<bool>> selectedItems;
+    // std::vector<std::vector<bool>> selectedItems;
+    // std::vector<Item> selectedItems;
+    std::unordered_set<Item, ItemHash> selectedItems;
     AvailableItems availableItems;
 
 public:
@@ -19,7 +22,7 @@ public:
     KspSolution(AvailableItems &availableItems);
     KspSolution(const KspSolution &solution);
 
-    std::vector<Item> GetSelectedItems();
+    std::unordered_set<Item, ItemHash> GetSelectedItems();
     std::vector<KspSolution> GetNeighbors(int n);
     int GetWeight() { return weight; }
     std::vector<int> GetGroupsProfits() { return groupProfits; }

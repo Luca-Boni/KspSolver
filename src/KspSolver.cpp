@@ -4,7 +4,8 @@
 #include <cstring>
 #include <filesystem>
 
-#define NEIGHBORHOOD_SIZE 20
+#define NEIGHBORHOOD_SIZE 100
+// #define NEIGHBORHOOD_FACTOR 10
 
 KspSolver::KspSolver(KspInstance &instance, int k) : instance(instance)
 {
@@ -51,7 +52,8 @@ void KspSolver::PrintCurSolution()
 
 void KspSolver::PrintBestSolution()
 {
-    std::cout << "Best solution: " << std::endl
+    std::cout << "Time elapsed: " << (double)(bestSolutionTime - startTime) / CLOCKS_PER_SEC << "s" << std::endl
+              << "Best solution: " << std::endl
               << bestSolution.ToString() << std::endl;
 }
 
@@ -90,7 +92,9 @@ void KspSolver::Iterate()
         {
             // s <- s'
             curSolution = neighbor;
-            // insere s na frente de L - se length(L) > k then Remove último elemento de L
+            // insere s na frente de L
+            // se length(L) > k then
+            //   Remove último elemento de L
             if (curIteration <= k)
             {
                 lastValues[curIteration - 1] = neighbor.GetValue();
@@ -107,6 +111,8 @@ void KspSolver::Iterate()
                 bestSolution = neighbor;
                 bestSolutionIteration = curIteration;
                 bestSolutionTime = clock();
+                std::cout << "Found new best solution at iteration " << curIteration << std::endl;
+                PrintBestSolution();
             }
         }
     }
@@ -118,10 +124,12 @@ void KspSolver::Solve(int maxIterations)
     bestSolutionTime = startTime;
     while (curIteration < maxIterations)
     {
-        PrintCurrentState();
-        PrintCurSolution();
+        // PrintCurrentState();
+        // PrintCurSolution();
         Iterate();
     }
-    PrintCurrentState();
+    // PrintCurrentState();
+    std::cout << "--------------------------------------------------------------------------------" << std::endl
+              << "Program finished. " << std::endl;
     PrintBestSolution();
 }

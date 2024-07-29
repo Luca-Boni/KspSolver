@@ -5,6 +5,8 @@
 #include <tuple>
 #include <iostream>
 
+#define NEIGHBOR_DEGREE 3
+
 KspSolution::KspSolution(AvailableItems &availableItems)
 {
     this->availableItems = availableItems;
@@ -14,16 +16,7 @@ KspSolution::KspSolution(AvailableItems &availableItems)
     weight = 0;
     groupProfits = std::vector<int>(groupsNum, 0);
 
-    selectedItems = std::vector<std::vector<bool>>(groupsNum);
-
-    for (int group = 0; group < groupsNum; group++)
-    {
-        selectedItems[group] = std::vector<bool>(availableItems.GetGroupSize(group), false);
-        for (int item = 0; item < availableItems.GetGroupSize(group); item++)
-        {
-            selectedItems[group][item] = false;
-        }
-    }
+    selectedItems = std::unordered_set<Item, ItemHash>();
 }
 
 KspSolution::KspSolution(const KspSolution &solution)
@@ -31,63 +24,37 @@ KspSolution::KspSolution(const KspSolution &solution)
     availableItems = solution.availableItems;
     weight = solution.weight;
     groupProfits = std::vector<int>(solution.groupProfits);
-    
-    selectedItems = std::vector<std::vector<bool>>(solution.selectedItems.size());
 
-    for (int group = 0; group < selectedItems.size(); group++)
-    {
-        selectedItems[group] = std::vector<bool>(solution.selectedItems[group].size());
-        for (int item = 0; item < selectedItems[group].size(); item++)
-        {
-            selectedItems[group][item] = solution.selectedItems[group][item];
-        }
-    }
+    selectedItems = std::unordered_set<Item, ItemHash>(solution.selectedItems);
 }
 
 std::vector<KspSolution> KspSolution::GetNeighbors(int n)
 {
     std::vector<KspSolution> neighbors;
-    std::vector<bool> neighboursTried = std::vector<bool>(availableItems.GetItemsNum(), false);
-
     int i = 0;
 
     while (i < n)
     {
         KspSolution neighbor(*this);
-        int group = rand() % selectedItems.size();
-        int item = rand() % selectedItems[group].size();
-        Item selectedItem = availableItems.GetItem(group, item);
-        int originalId = selectedItem.id;
-        bool looped = false;
+        int selectedItemsNum = (rand() % NEIGHBOR_DEGREE) + 1;
 
-        while (neighboursTried[selectedItem.id])
+        for (int j = 0; j < selectedItemsNum; j++)
         {
-            selectedItem = availableItems.GetNextItem(selectedItem);
-            if (selectedItem.id == originalId)
+            int itemId = rand() % availableItems.GetItemsNum();
+            Item selectedItem = availableItems.GetItem(itemId);
+
+            if (selectedItems.find(selectedItem) == selectedItems.end())
             {
-                looped = true;
-                break;
+                neighbor.groupProfits[selectedItem.group] += selectedItem.profit;
+                neighbor.weight += selectedItem.weight;
+                neighbor.selectedItems.insert(selectedItem);
             }
-        }
-
-        if (looped)
-        {
-            break;
-        }
-
-        neighboursTried[selectedItem.id] = true;
-
-        if (neighbor.selectedItems[group][item])
-        {
-            neighbor.groupProfits[group] -= selectedItem.profit;
-            neighbor.weight -= selectedItem.weight;
-            neighbor.selectedItems[group][item] = false;
-        }
-        else
-        {
-            neighbor.groupProfits[group] += selectedItem.profit;
-            neighbor.weight += selectedItem.weight;
-            neighbor.selectedItems[group][item] = true;
+            else
+            {
+                neighbor.groupProfits[selectedItem.group] -= selectedItem.profit;
+                neighbor.weight -= selectedItem.weight;
+                neighbor.selectedItems.erase(selectedItem);
+            }
         }
 
         if (neighbor.weight <= availableItems.GetCapacity())
@@ -100,27 +67,15 @@ std::vector<KspSolution> KspSolution::GetNeighbors(int n)
     return neighbors;
 }
 
-std::vector<Item> KspSolution::GetSelectedItems()
+std::unordered_set<Item, ItemHash> KspSolution::GetSelectedItems()
 {
-    std::vector<Item> selectedItems;
-    for (int group = 0; group < this->selectedItems.size(); group++)
-    {
-        for (int item = 0; item < this->selectedItems[group].size(); item++)
-        {
-            if (this->selectedItems[group][item])
-            {
-                selectedItems.push_back(availableItems.GetItem(group, item));
-            }
-        }
-    }
-
     return selectedItems;
 }
 
 std::string KspSolution::ToString()
 {
-    std::string str = "Selected Items: ";
-    for (Item item : GetSelectedItems())
+    std::string str = "Selected Items: " + std::to_string(selectedItems.size()) + "\n";
+    for (Item item : selectedItems)
     {
         str += item.ToString() + " ";
     }

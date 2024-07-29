@@ -26,6 +26,7 @@ public:
     std::vector<std::vector<Item>> GetItems() { return items; };
 
     Item GetItem(int group, int item) { return items[group][item]; }
+    Item GetItem(int id);
     Item GetNextItem(Item item);
 
     std::string ToString();

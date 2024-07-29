@@ -75,3 +75,19 @@ Item AvailableItems::GetNextItem(Item item)
 
     return items[group][itemIndex];
 }
+
+Item AvailableItems::GetItem(int id)
+{
+    int group;
+    int idLeft = id;
+    for (group = 0; group < groupsNum; group++)
+    {
+        if (idLeft < groupSizes[group])
+        {
+            return items[group][idLeft];
+        }
+        idLeft -= groupSizes[group];
+    }
+
+    throw std::runtime_error("Item not found!");
+}
