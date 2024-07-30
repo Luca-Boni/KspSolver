@@ -6,18 +6,20 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
+#include <random>
 
 class KspSolution
 {
 private:
     int weight;
     std::vector<int> groupProfits;
-    // std::vector<std::vector<bool>> selectedItems;
-    // std::vector<Item> selectedItems;
     std::unordered_set<Item, ItemHash> selectedItems;
     AvailableItems availableItems;
 
 public:
+    inline static int randomSeed;
+    inline static std::default_random_engine generator;
+
     KspSolution() {}
     KspSolution(AvailableItems &availableItems);
     KspSolution(const KspSolution &solution);

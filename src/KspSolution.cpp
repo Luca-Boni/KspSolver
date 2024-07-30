@@ -5,7 +5,7 @@
 #include <tuple>
 #include <iostream>
 
-#define NEIGHBOR_DEGREE 3
+#define NEIGHBOR_DEGREE 10
 
 KspSolution::KspSolution(AvailableItems &availableItems)
 {
@@ -36,11 +36,11 @@ std::vector<KspSolution> KspSolution::GetNeighbors(int n)
     while (i < n)
     {
         KspSolution neighbor(*this);
-        int selectedItemsNum = (rand() % NEIGHBOR_DEGREE) + 1;
+        int selectedItemsNum = (generator() % NEIGHBOR_DEGREE) + 1;
 
         for (int j = 0; j < selectedItemsNum; j++)
         {
-            int itemId = rand() % availableItems.GetItemsNum();
+            int itemId = generator() % availableItems.GetItemsNum();
             Item selectedItem = availableItems.GetItem(itemId);
 
             if (selectedItems.find(selectedItem) == selectedItems.end())
@@ -55,6 +55,19 @@ std::vector<KspSolution> KspSolution::GetNeighbors(int n)
                 neighbor.weight -= selectedItem.weight;
                 neighbor.selectedItems.erase(selectedItem);
             }
+        }
+
+        while(neighbor.weight > availableItems.GetCapacity())
+        {
+            // Removes random item from selected items
+            int itemId = generator() % neighbor.selectedItems.size();
+            auto it = neighbor.selectedItems.begin();
+            std::advance(it, itemId);
+            Item selectedItem = *it;
+
+            neighbor.groupProfits[selectedItem.group] -= selectedItem.profit;
+            neighbor.weight -= selectedItem.weight;
+            neighbor.selectedItems.erase(selectedItem);
         }
 
         if (neighbor.weight <= availableItems.GetCapacity())

@@ -3,3 +3,9 @@
 bin/
 
 obj/
+
+runInstances.cpp
+runInstances
+*.csv
+*.txt
+*.out

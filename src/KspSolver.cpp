@@ -19,6 +19,8 @@ KspSolver::KspSolver(KspInstance &instance, int k) : instance(instance)
 
     bestSolution = curSolution;
     bestSolutionIteration = 0;
+
+    finishTime = 0;
 }
 
 void KspSolver::PrintInstance()
@@ -111,8 +113,8 @@ void KspSolver::Iterate()
                 bestSolution = neighbor;
                 bestSolutionIteration = curIteration;
                 bestSolutionTime = clock();
-                std::cout << "Found new best solution at iteration " << curIteration << std::endl;
-                PrintBestSolution();
+                // std::cout << "Found new best solution at iteration " << curIteration << std::endl;
+                // PrintBestSolution();
             }
         }
     }
@@ -124,12 +126,11 @@ void KspSolver::Solve(int maxIterations)
     bestSolutionTime = startTime;
     while (curIteration < maxIterations)
     {
-        // PrintCurrentState();
-        // PrintCurSolution();
         Iterate();
     }
-    // PrintCurrentState();
+    finishTime = clock();
     std::cout << "--------------------------------------------------------------------------------" << std::endl
               << "Program finished. " << std::endl;
     PrintBestSolution();
+    std::cout << "Total time elapsed: " << GetFinishTime() << "s" << std::endl;
 }

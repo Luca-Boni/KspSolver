@@ -19,7 +19,7 @@ for file in $curPath/src/*.cpp
 do
     filename=${file##*/}
     filename=${filename%.*}
-    g++ -g -c $file -o $curPath'/obj/'$filename'.o' -I $curPath'/include'
+    g++ -pg -c $file -o $curPath'/obj/'$filename'.o' -I $curPath'/include'
 done
 
 obj=''
@@ -29,4 +29,4 @@ do
     obj=$obj' '$file
 done
 
-g++ -g -o $curPath/bin/kspSolver $obj
+g++ -pg -o $curPath/bin/kspSolver $obj

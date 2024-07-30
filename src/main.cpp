@@ -1,5 +1,6 @@
 #include "KspInstance.hpp"
 #include "KspSolver.hpp"
+#include "KspSolution.hpp"
 #include <iostream>
 #include <filesystem>
 #include <ctime>
@@ -11,15 +12,15 @@ using namespace std;
 
 int main(int argc, char const *argv[]){
 
-    string instanceFile = "./data/A02C";
+    string instanceFile = "";
     int k = K;
     int maxIterations = MAX_ITERATIONS;
-    srand(time(NULL));
+    int randomSeed = time(NULL);
 
     if (argc < 2 || argc > 5)
     {
         cout << "Usage: " << argv[0] << " <instance_file> [srand] [k] [max_iterations]" << endl;
-        // return 1;
+        return 1;
     }
 
     if (argc >= 2)
@@ -29,7 +30,7 @@ int main(int argc, char const *argv[]){
 
     if (argc >= 3)
     {
-        srand(atoi(argv[2]));
+        randomSeed = atoi(argv[2]);
     }
 
     if (argc >= 4)
@@ -41,6 +42,9 @@ int main(int argc, char const *argv[]){
     {
         maxIterations = atoi(argv[4]);
     }
+
+    KspSolution::randomSeed = randomSeed;
+    KspSolution::generator = std::default_random_engine(randomSeed);
 
     KspInstance instance = KspInstance(instanceFile);
     KspSolver solver = KspSolver(instance, k);

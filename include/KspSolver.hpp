@@ -20,8 +20,8 @@ private:
 
     clock_t startTime;
     clock_t bestSolutionTime;
+    clock_t finishTime;
 
-    void Initialize();
     void Iterate();
     void PrintCurrentState();
     void PrintCurSolution();
@@ -41,6 +41,7 @@ public:
     int GetBestWeight() { return bestSolution.GetWeight(); }
 
     int GetCurIteration() { return curIteration; }
+    double GetFinishTime() { return finishTime == 0 ? 0 : (double)(finishTime - startTime) / CLOCKS_PER_SEC; }
 
     void PrintCurItems();
     void PrintBestItems();
