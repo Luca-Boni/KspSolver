@@ -6,7 +6,7 @@
 #include <ctime>
 
 #define K 20
-#define MAX_ITERATIONS 100
+#define MAX_ITERATIONS 1000
 
 using namespace std;
 

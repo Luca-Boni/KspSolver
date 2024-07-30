@@ -15,14 +15,15 @@ To run the program, execute `kspSolver` located in the `bin` directory. It takes
 - `instance_file`, the path to the input file (MANDATORY)
 - `srand`, the seed for the random number generator (OPTIONAL, default is the current UNIX time)
 - `k`, which is the size of the list that keeps the last values of the objective function (OPTIONAL, default is 20)
-- `max_iterations`, the maximum number of iterations the program will run (OPTIONAL, default is 100)
+- `max_iterations`, the maximum number of iterations the program will run (OPTIONAL, default is 1000)
 
 Examples:
 
 ```bash
 ./bin/kspSolver data/A02C
-./bin/kspSolver data/A10 30
-./bin/kspSolver data/B50 15 200
+./bin/kspSolver data/A10 1
+./bin/kspSolver data/B50 234 15
+./bin/kspSolver data/B50 99999 20 1000
 ```
 
 ## Input format
